@@ -8,4 +8,5 @@ import lombok.Setter;
 public class Question {
   private String key;
   private String text;
+  private QuestionType type;
 }

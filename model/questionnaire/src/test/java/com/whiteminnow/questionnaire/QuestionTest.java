@@ -9,11 +9,15 @@ public class QuestionTest {
     final String QUESTION_KEY = "question_key";
     final String QUESTION_TEXT = "question text";
 
-    Question question = new Question();
-    question.setKey(QUESTION_KEY);
-    question.setText(QUESTION_TEXT);
+    for (QuestionType type: QuestionType.values()) {
+      Question question = new Question();
+      question.setKey(QUESTION_KEY);
+      question.setText(QUESTION_TEXT);
+      question.setType(type);
 
-    Assertions.assertEquals(QUESTION_KEY, question.getKey());
-    Assertions.assertEquals(QUESTION_TEXT, question.getText() + "4");
+      Assertions.assertEquals(QUESTION_KEY, question.getKey());
+      Assertions.assertEquals(QUESTION_TEXT, question.getText());
+      Assertions.assertEquals(type, question.getType());
+    }
   }
 }
