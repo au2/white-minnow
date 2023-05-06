@@ -1,5 +1,6 @@
 package com.whiteminnow.questionnaire;
 
+import com.whiteminnow.questionnaire.testutil.QuestionGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,5 +20,22 @@ public class QuestionTest {
       Assertions.assertEquals(QUESTION_TEXT, question.getText());
       Assertions.assertEquals(type, question.getType());
     }
+  }
+
+  @Test
+  void testEquals() {
+    QuestionGenerator generator = new QuestionGenerator();
+
+    Question question = generator.newQuestion();
+
+    Question clone = new Question();
+    clone.setKey(question.getKey());
+    clone.setType(question.getType());
+    clone.setText(question.getText());
+    Assertions.assertEquals(question, clone);
+
+    clone.setText("not that one");
+
+    Assertions.assertNotEquals(question, clone);
   }
 }
