@@ -17,5 +17,6 @@ dependencyResolutionManagement {
 rootProject.name = 'white-minnow'
 
 include ':model:questionnaire'
-
+include 'cencus-api:geocoding'
+findProject(':cencus-api:geocoding')?.name = 'geocoding'
 

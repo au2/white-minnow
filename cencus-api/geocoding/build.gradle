@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'io.freefair.lombok'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group 'com.whitewminnow.geocoding'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_version}"
+
+    implementation "org.springframework.boot:spring-boot-starter:${spring_boot_version}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}"
+
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version}"
+    testImplementation 'io.projectreactor:reactor-test:3.5.6'
+}

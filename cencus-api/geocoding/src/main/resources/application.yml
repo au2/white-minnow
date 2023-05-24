@@ -1,0 +1,10 @@
+white-minnow:
+  geocoding:
+    url: https://geocoding.geo.census.gov/geocoder
+
+logging:
+  level:
+    reactor:
+      netty:
+        http:
+          client: debug
