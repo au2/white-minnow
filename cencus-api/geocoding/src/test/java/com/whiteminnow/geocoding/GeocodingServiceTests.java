@@ -3,7 +3,8 @@ package com.whiteminnow.geocoding;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.whiteminnow.geocoding.service.GeoCodingService;
+import com.whiteminnow.geocoding.model.Address;
+import com.whiteminnow.geocoding.service.GeocodingService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,10 @@ import reactor.test.StepVerifier;
 
 @SpringBootTest
 @Slf4j
-public class GeoCodingServiceTests {
+public class GeocodingServiceTests {
 
   @Autowired
-  private GeoCodingService service;
+  private GeocodingService service;
 
   @Autowired
   private ObjectMapper mapper;
@@ -25,7 +26,12 @@ public class GeoCodingServiceTests {
   @Test
   @SneakyThrows
   void testGeoCoding() {
-    Mono<String> result = service.addressToCoordinates();
+    Address address = Address.builder()
+        .number(10805).streetName("Brewer House").streetType("Rd")
+        .city("Rockville").state("MD").zip("20852")
+        .build();
+
+    Mono<String> result = service.addressToCoordinates(address);
 
     StepVerifier.create(result)
         .expectNextMatches(body -> {

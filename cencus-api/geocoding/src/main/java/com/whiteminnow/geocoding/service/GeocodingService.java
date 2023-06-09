@@ -1,6 +1,7 @@
 package com.whiteminnow.geocoding.service;
 
 import com.whiteminnow.geocoding.config.AppProperties;
+import com.whiteminnow.geocoding.model.Address;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,11 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GeoCodingService {
-  private final AppProperties properties;
-
+public class GeocodingService {
   private final WebClient webClient;
 
-  public Mono<String> addressToCoordinates() {
-    final String address = "10805 Brewer House Rd Rockville MD 20852";
-    final String uri = "/geographies/onelineaddress?benchmark=Public_AR_Current&vintage=Current_Current&address=" + address;
+  public Mono<String> addressToCoordinates(Address address) {
+    final String uri = "/geographies/onelineaddress?benchmark=Public_AR_Current&vintage=Current_Current&address=" + address.toString();
 
     return webClient.get()
         .uri(uri)

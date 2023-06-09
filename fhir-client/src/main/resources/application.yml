@@ -1,0 +1,14 @@
+white-minnow:
+  fhir-client:
+    url: https://msdemo-livetest-api.medicasoft.us:8443
+
+logging:
+  level:
+    reactor:
+      netty:
+        http:
+          client: debug
+
+spring.config.import: >
+  nxt-key.yml,
+  nxt-crt.yml
