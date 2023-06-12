@@ -2,6 +2,7 @@ package com.whiteminnow.fhirclient.service;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
+import com.whiteminnow.fhirclient.library.BundleMapper;
 import com.whiteminnow.fhirclient.model.ResourceRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,7 +26,6 @@ public class FhirClient {
   private final FhirContext context;
 
   public Mono<Bundle> getBundle(ResourceRequest request) {
-
     return webClient.get()
         .uri(request.getUri())
         .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML)
@@ -40,6 +42,15 @@ public class FhirClient {
           } else {
             return response.createException().flatMap(Mono::error);
           }
+        });
+  }
+
+  public Mono<List<String>> getIds(ResourceRequest request) {
+    Mono<Bundle> bundleMono = getBundle(request);
+
+    return bundleMono
+        .map(bundle -> {
+          return BundleMapper.toIds(bundle);
         });
   }
 

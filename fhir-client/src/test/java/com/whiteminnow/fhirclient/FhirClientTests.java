@@ -16,6 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.io.FileWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 @SpringBootTest
 @Slf4j
 public class FhirClientTests {
@@ -44,6 +49,39 @@ public class FhirClientTests {
           parser.setPrettyPrint(true);
           log.info(parser.encodeResourceToString(body));
           return true;
+        })
+        .verifyComplete();
+  }
+
+  @Test
+  @SneakyThrows
+  void testGetIdsFor50() {
+    Path resourceDirectory = Paths.get("src","test", "resources", "patients.txt");
+    String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+
+    System.out.println(absolutePath);
+
+    ResourceRequest request = ResourceRequest.builder()
+        .requestResource("Patient")
+        .resultResource("Bundle")
+        .queryParameter("_count", "50")
+        .build();
+
+    Mono<List<String>> result = fhirClient.getIds(request);
+
+    StepVerifier.create(result)
+        .expectNextMatches(idList -> {
+          try {
+            FileWriter fileWriter = new FileWriter(absolutePath);
+            for(String id: idList) {
+              fileWriter.write(id + System.lineSeparator());
+              log.info(id);
+            }
+            fileWriter.close();
+            return true;
+          } catch (Exception exception) {
+            return false;
+          }
         })
         .verifyComplete();
   }
