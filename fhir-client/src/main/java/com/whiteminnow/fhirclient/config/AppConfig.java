@@ -1,5 +1,6 @@
 package com.whiteminnow.fhirclient.config;
 
+import ca.uhn.fhir.context.FhirContext;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import lombok.Setter;
@@ -52,6 +53,11 @@ public class AppConfig {
         .baseUrl(appProperties.getUrl())
         .clientConnector(new ReactorClientHttpConnector(httpClient))
         .build();
+  }
+
+  @Bean
+  public FhirContext fhirContextBean() {
+    return FhirContext.forR4();
   }
 
 }

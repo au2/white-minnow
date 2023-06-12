@@ -19,5 +19,8 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-webflux:${spring_boot_version}"
     testImplementation 'io.projectreactor:reactor-test:3.5.6'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.3.6'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
+    implementation 'ca.uhn.hapi.fhir:hapi-fhir-base:6.4.4'
+    implementation 'ca.uhn.hapi.fhir:hapi-fhir-server-openapi:6.4.4'
 }

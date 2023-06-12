@@ -1,6 +1,6 @@
 white-minnow:
   fhir-client:
-    url: https://msdemo-livetest-api.medicasoft.us:8443
+    url: https://msdemo-livetest-api.medicasoft.us:8443/fhir
 
 logging:
   level:
