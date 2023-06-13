@@ -18,19 +18,39 @@ public class ResourceRequest {
   @Singular
   private Map<String, String> queryParameters;
 
-  public String getUri() {
-    final StringBuilder builder = new StringBuilder('/' + requestResource);
-    final int initialLength = builder.length();
-
-    if (queryParameters != null && queryParameters.size() > 0) {
-      queryParameters.forEach((key, value) -> {
-        builder.append(builder.length() > initialLength ? '&' : '?');
-        builder.append(key);
-        builder.append('=');
-        builder.append(value);
-      });
+  public String getQueryParametersAsString() {
+    if (queryParameters == null || queryParameters.size() < 1) {
+      return null;
     }
 
+    final StringBuilder builder = new StringBuilder();
+
+    queryParameters.forEach((key, value) -> {
+      if (builder.length() > 0) {
+        builder.append('&');
+      }
+      builder.append(key);
+      builder.append('=');
+      builder.append(value);
+    });
+
+    return builder.toString();
+  }
+
+  public String getUri() {
+    final StringBuilder builder = new StringBuilder('/' + requestResource);
+    String parameters = getQueryParametersAsString();
+    if (parameters != null) {
+      builder.append('?');
+      builder.append(parameters);
+    }
+    return builder.toString();
+  }
+
+  public String getSearchUri() {
+    final StringBuilder builder = new StringBuilder('/' + requestResource);
+    builder.append('/');
+    builder.append("_search");
     return builder.toString();
   }
 

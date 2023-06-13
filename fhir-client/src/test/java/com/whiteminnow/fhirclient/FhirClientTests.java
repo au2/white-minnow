@@ -9,6 +9,8 @@ import com.whiteminnow.fhirclient.model.ResourceRequest;
 import com.whiteminnow.fhirclient.service.FhirClient;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.instance.model.api.IBaseReference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.io.FileWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -82,6 +85,32 @@ public class FhirClientTests {
           } catch (Exception exception) {
             return false;
           }
+        })
+        .verifyComplete();
+  }
+
+  @Test
+  @SneakyThrows
+  void testCreateNdiFile() {
+    Path resourceDirectory = Paths.get("src","test", "resources", "patients.txt");
+    List<String> idList = Files.readAllLines(resourceDirectory);
+    String queryParameterValue = String.join(",", idList);
+
+    ResourceRequest request = ResourceRequest.builder()
+        .requestResource("Patient")
+        .queryParameter("_id", queryParameterValue)
+        .build();
+
+    Mono<List<IBaseResource>> result = fhirClient.getBundlePages(request);
+
+    StepVerifier.create(result)
+        .expectNextMatches(body -> {
+          IParser parser = context.newJsonParser();
+          parser.setPrettyPrint(true);
+          for (IBaseResource resource: body) {
+            log.info(parser.encodeResourceToString(resource));
+          }
+          return true;
         })
         .verifyComplete();
   }
