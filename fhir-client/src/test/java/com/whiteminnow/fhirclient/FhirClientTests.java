@@ -112,7 +112,7 @@ public class FhirClientTests {
     StepVerifier.create(result)
         .expectNextMatches(body -> {
           try {
-            FileWriter fileWriter = new FileWriter(absoluteOutputPath);
+            FileWriter fileWriter = new FileWriter(absoluteOutputPath, false);
             for(IBaseResource resource: body) {
               Patient patient = (Patient) resource;
               NdiRequestLine line = ResourceMapper.patientToNdiRequestLine(patient);
