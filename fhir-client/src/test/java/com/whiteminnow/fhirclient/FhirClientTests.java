@@ -5,6 +5,8 @@ import ca.uhn.fhir.parser.IParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.whiteminnow.fhirclient.library.ResourceMapper;
+import com.whiteminnow.fhirclient.model.NdiRequestLine;
 import com.whiteminnow.fhirclient.model.ResourceRequest;
 import com.whiteminnow.fhirclient.service.FhirClient;
 import lombok.SneakyThrows;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Patient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -103,14 +106,23 @@ public class FhirClientTests {
 
     Mono<List<IBaseResource>> result = fhirClient.getBundlePages(request);
 
+    Path outputPath = Paths.get("src","test", "resources", "ndi_request.txt");
+    String absoluteOutputPath = outputPath.toFile().getAbsolutePath();
+
     StepVerifier.create(result)
         .expectNextMatches(body -> {
-          IParser parser = context.newJsonParser();
-          parser.setPrettyPrint(true);
-          for (IBaseResource resource: body) {
-            log.info(parser.encodeResourceToString(resource));
+          try {
+            FileWriter fileWriter = new FileWriter(absoluteOutputPath);
+            for(IBaseResource resource: body) {
+              Patient patient = (Patient) resource;
+              NdiRequestLine line = ResourceMapper.patientToNdiRequestLine(patient);
+              fileWriter.write(line.toFileLine() + System.lineSeparator());
+            }
+            fileWriter.close();
+            return true;
+          } catch (Exception exception) {
+            return false;
           }
-          return true;
         })
         .verifyComplete();
   }
